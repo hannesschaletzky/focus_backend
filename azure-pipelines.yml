@@ -11,10 +11,10 @@ variables:
   azureSubscription: '2626c97c-a460-4837-879f-f3cf8d5db7c6'
 
   # Web app name
-  webAppName: 'expressExample1'
+  webAppName: 'focus_backend'
 
   # Environment name
-  environmentName: 'expressExample1'
+  environmentName: 'focus_backend'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
