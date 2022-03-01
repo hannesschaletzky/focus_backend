@@ -4,6 +4,9 @@
   },
   "compilerOptions": {
     "baseUrl": "./src",
+    "paths": {
+      "c": ["/controllers"] // This mapping is relative to "baseUrl"
+    },
     "target": "es5",
     "module": "commonjs",
     "lib": ["es6"],
