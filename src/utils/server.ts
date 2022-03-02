@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import { errorHandler } from 'middleware/mw_error';
-import { Controller } from 'controllers/controller';
+import { GameController } from 'controllers/controller';
 import { req_ID, req_Name, req_Color, req_Rounds } from 'middleware/mw_require';
 
 export const setupExpressServer = () => {
@@ -22,10 +22,10 @@ export const setupExpressServer = () => {
     app.get('/', (req, res) => {
       res.json('This is the focus game backend');
     });
-    app.post('/init', req_Color, Controller.r_create);
-    app.post('/finish', req_ID, req_Name, req_Rounds, Controller.r_finish);
-    app.get('/leaderboard', Controller.r_leaders);
-    app.get('/totalgames', Controller.r_totalGames);
+    app.post('/init', req_Color, GameController.r_create);
+    app.post('/finish', req_ID, req_Name, req_Rounds, GameController.r_finish);
+    app.get('/leaderboard', GameController.r_leaders);
+    app.get('/totalgames', GameController.r_totalGames);
 
     // error handler
     app.use(errorHandler);

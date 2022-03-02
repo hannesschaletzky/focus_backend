@@ -7,7 +7,7 @@ function sendSuccess(res: Response, obj: Record<string, unknown> | unknown) {
   res.status(200).json(obj);
 }
 
-export class Controller {
+export class GameController {
   // INIT
   static r_create(req: Request, res: Response, next: NextFunction) {
     const color = req.body.color;
