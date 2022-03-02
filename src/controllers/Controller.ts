@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { executeQuery } from 'db/db_request';
-import { tableName } from 'db/db_server';
 import { HttpException } from 'middleware/mw_error';
 import { Status } from 'utils/types';
+import { Repository } from 'db/repository';
 
 function sendSuccess(res: Response, obj: Record<string, unknown> | unknown) {
   res.status(200).json(obj);
@@ -12,9 +11,11 @@ export class Controller {
   // INIT
   static r_create(req: Request, res: Response, next: NextFunction) {
     const color = req.body.color;
-    executeQuery(`INSERT INTO ${tableName} (color)
-                    VALUES ('${color}');
-                  SELECT SCOPE_IDENTITY() AS [SCOPE_IDENTITY];`)
+    Repository.executeQuery(
+      `INSERT INTO ${Repository.getTable()} (color)
+        VALUES ('${color}');
+      SELECT SCOPE_IDENTITY() AS [SCOPE_IDENTITY];`
+    )
       .then((rows) => {
         const id = Number.parseInt(rows[0]['SCOPE_IDENTITY']);
         sendSuccess(res, { id: id, msg: 'game initialized' });
@@ -30,15 +31,18 @@ export class Controller {
     const name = req.body.name;
     // 1. delete old record with same name and points
     // 2. set current game to finished
-    executeQuery(`DELETE
-                  FROM ${tableName}
-                  WHERE name = '${name}' AND
-                        rounds=(SELECT rounds FROM ${tableName} WHERE id=${id});
+    const tbl = Repository.getTable();
+    Repository.executeQuery(
+      `DELETE
+      FROM ${tbl}
+      WHERE name = '${name}' AND
+            rounds=(SELECT rounds FROM ${tbl} WHERE id=${id});
 
-                  UPDATE ${tableName}
-                  SET status = '${Status.finished}',
-                      name = '${name}'
-                  WHERE id=${id}`)
+      UPDATE ${tbl}
+      SET status = '${Status.finished}',
+          name = '${name}'
+      WHERE id=${id}`
+    )
       .then(() => {
         sendSuccess(res, { msg: `DB: ${name} has finished game ${id}` });
       })
@@ -49,14 +53,16 @@ export class Controller {
 
   // LEADERBOARD
   static r_leaders(req: Request, res: Response, next: NextFunction) {
-    executeQuery(`SELECT  TOP 10
-                        name,
-                        rounds,
-                        created_at,
-                        color
-                  FROM ${tableName} 
-                  WHERE status='finished'
-                  ORDER BY rounds DESC, created_at DESC`)
+    Repository.executeQuery(
+      `SELECT  TOP 10
+            name,
+            rounds,
+            created_at,
+            color
+      FROM ${Repository.getTable()} 
+      WHERE status='finished'
+      ORDER BY rounds DESC, created_at DESC`
+    )
       .then((rows) => {
         sendSuccess(res, rows);
       })
@@ -67,8 +73,10 @@ export class Controller {
 
   // TOTAL GAMES
   static r_totalGames(req: Request, res: Response, next: NextFunction) {
-    executeQuery(`SELECT COUNT(*)
-                  FROM ${tableName};`)
+    Repository.executeQuery(
+      `SELECT COUNT(*)
+      FROM ${Repository.getTable()};`
+    )
       .then((rows) => {
         sendSuccess(res, rows[0]['']);
       })
