@@ -37,7 +37,7 @@ export class Controller {
       `DELETE
       FROM ${tbl}
       WHERE name = '${name}' AND
-            rounds=(SELECT rounds FROM ${tbl} WHERE id=${id});
+            rounds=${rounds};
 
       UPDATE ${tbl}
       SET status = '${Status.finished}',
