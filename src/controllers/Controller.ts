@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { HttpException } from 'middleware/mw_error';
 import { Status } from 'utils/types';
-import { Repository } from 'db/repository';
+import { Repository } from 'db/Repository';
 
 function sendSuccess(res: Response, obj: Record<string, unknown> | unknown) {
   res.status(200).json(obj);

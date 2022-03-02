@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import { errorHandler } from 'middleware/mw_error';
-import { Controller } from 'controllers/controller';
+import { Controller } from 'controllers/Controller';
 import { req_ID, req_Name, req_Color, req_Rounds } from 'middleware/mw_require';
 
 export const setupExpressServer = () => {
