@@ -29,6 +29,7 @@ export class Controller {
   static r_finish(req: Request, res: Response, next: NextFunction) {
     const id = req.body.id;
     const name = req.body.name;
+    const rounds = req.body.rounds;
     // 1. delete old record with same name and points
     // 2. set current game to finished
     const tbl = Repository.getTable();
@@ -40,7 +41,8 @@ export class Controller {
 
       UPDATE ${tbl}
       SET status = '${Status.finished}',
-          name = '${name}'
+          name = '${name}',
+          rounds = ${rounds}
       WHERE id=${id}`
     )
       .then(() => {
