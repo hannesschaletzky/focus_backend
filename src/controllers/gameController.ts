@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import { HttpException } from 'middleware/mw_error';
 import { Status } from 'utils/types';
-import { Repository } from 'db/repository';
+import { Repository } from 'db/gameRepository';
 
 function sendSuccess(res: Response, obj: Record<string, unknown> | unknown) {
   res.status(200).json(obj);
 }
 
-export class GameController {
+export class Controller {
   // INIT
   static r_create(req: Request, res: Response, next: NextFunction) {
     const color = req.body.color;

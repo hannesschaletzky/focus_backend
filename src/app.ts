@@ -1,7 +1,6 @@
 import 'dotenv/config';
 import { setupExpressServer } from './utils/server';
-//import { getSQLServerConnection } from 'db/db_server';
-import { Repository } from 'db/repository';
+import { Repository } from 'db/gameRepository';
 
 const hostname = process.env.HOSTNAME;
 const port = process.env.PORT;
