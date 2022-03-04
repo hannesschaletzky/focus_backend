@@ -30,20 +30,22 @@ export class Controller {
     const id = req.body.id;
     const name = req.body.name;
     const rounds = req.body.rounds;
-    // 1. delete old record with same name and points
-    // 2. set current game to finished
+    // 1. update old record with same name and points to obsolete
+    // 2. update current game to finished
     const tbl = Repository.getTable();
     Repository.executeQuery(
-      `DELETE
-      FROM ${tbl}
+      `
+      UPDATE ${tbl}
+      SET status = '${Status.obsolete}'
       WHERE name = '${name}' AND
             rounds=${rounds};
+      
 
       UPDATE ${tbl}
       SET status = '${Status.finished}',
           name = '${name}',
           rounds = ${rounds}
-      WHERE id=${id}`
+      WHERE id=${id};`
     )
       .then(() => {
         sendSuccess(res, { msg: `DB: ${name} has finished game ${id}` });

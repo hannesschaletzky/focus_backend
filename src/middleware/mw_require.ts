@@ -57,9 +57,10 @@ export const req_Color = (req: Request, res: Response, next: NextFunction) => {
 // require rounds passed in body
 export const req_Rounds = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const extract = extractFromBody('rounds', req.body);
-    const rounds = parseToInt(extract);
-    req.body.rounds = rounds;
+    extractFromBody('rounds', req.body);
+    // const extract = extractFromBody('rounds', req.body);
+    // const rounds = parseToInt(extract);
+    // req.body.rounds = rounds;
     next();
   } catch (err) {
     next(err);

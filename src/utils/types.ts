@@ -1,5 +1,5 @@
 export enum Status {
   init = 'init',
   finished = 'finished',
-  cheated = 'cheated'
+  obsolete = 'obs' // same player scored >= rounds
 }
