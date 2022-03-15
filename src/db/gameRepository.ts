@@ -1,66 +1,12 @@
 import { Request, ColumnValue } from 'tedious';
-//https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/tedious/index.d.ts
-import { Connection, ConnectionConfig } from 'tedious';
 import { Status } from 'utils/types';
-
-// config
-const config: ConnectionConfig = {
-  authentication: {
-    options: {
-      userName: process.env.SQL_Server_user,
-      password: process.env.SQL_Server_pw
-    },
-    type: 'default'
-  },
-  server: process.env.SQL_Server_url,
-  options: {
-    database: process.env.SQL_Server_database,
-    encrypt: true,
-    trustServerCertificate: true
-  }
-};
+import { ConnectionPool } from './dbConnection';
 
 type SQLResponse = {
   [key: string]: string;
 };
 
 export class Repository {
-  // return server connection
-  static con: Connection;
-  static open = false;
-
-  // establish connection
-  static establishSQLConnection() {
-    return new Promise<Connection>((resolve) => {
-      if (!this.open) {
-        this.con = new Connection(config);
-        this.con.on('connect', (err) => {
-          if (err) {
-            console.log('db connection failed');
-            throw err;
-          }
-          console.log(
-            `db connection to ${config.options?.database} established`
-          );
-          this.open = true;
-          resolve(this.con);
-        });
-        this.con.on('end', () => {
-          console.log('db connection ended');
-          this.open = false;
-        });
-        this.con.on('error', (err) => {
-          console.log('db connection retrieved error: ' + err.message);
-          this.open = false;
-          this.con.connect();
-        });
-        this.con.connect();
-      } else {
-        resolve(this.con);
-      }
-    });
-  }
-
   // check if game exists
   static gameExists(id: number) {
     return new Promise<boolean | Error>((resolve, reject) => {
@@ -99,7 +45,7 @@ export class Repository {
   }
 
   // execute query to SQL database
-  static executeQuery(query: string) {
+  static executeQuery(query: string, init = false) {
     return new Promise<SQLResponse[]>((resolve, reject) => {
       // create request
       const request: Request = new Request(query, (err) => {
@@ -120,7 +66,7 @@ export class Repository {
       request.on('requestCompleted', () => resolve(rows));
 
       // execute request
-      this.establishSQLConnection().then((con) => {
+      ConnectionPool.getConnection(init).then((con) => {
         con.execSql(request);
       });
     });

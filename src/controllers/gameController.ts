@@ -14,7 +14,8 @@ export class Controller {
     Repository.executeQuery(
       `INSERT INTO ${Repository.getTable()} (color)
         VALUES ('${color}');
-      SELECT SCOPE_IDENTITY() AS [SCOPE_IDENTITY];`
+      SELECT SCOPE_IDENTITY() AS [SCOPE_IDENTITY];`,
+      true
     )
       .then((rows) => {
         const id = Number.parseInt(rows[0]['SCOPE_IDENTITY']);

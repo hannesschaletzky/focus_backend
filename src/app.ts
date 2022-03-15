@@ -1,6 +1,5 @@
 import 'dotenv/config';
 import { setupExpressServer } from './utils/server';
-import { Repository } from 'db/gameRepository';
 
 const hostname = process.env.HOSTNAME;
 const port = process.env.PORT;
@@ -11,6 +10,3 @@ setupExpressServer().then((server) => {
     console.log(`Server running on ${hostname}:${port}/`);
   });
 });
-
-// init sql server connection
-Repository.establishSQLConnection();
